@@ -1,9 +1,8 @@
-#include "uart.h"
-
-#include "stm32f10x_conf.h"
 #include "stm32f10x_usart.h"
 #include "stm32f10x_gpio.h"
 #include "stm32f10x_rcc.h"
+
+#include "uart.h"
 
 #define USER_USART USART2
 #define USER_USART_BAUD 115200
