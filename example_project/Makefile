@@ -62,7 +62,6 @@ $(BUILDDIR)/$(TARGET).bin: $(BUILDDIR)/$(TARGET).elf
 	@$(OBJCOPY) -O ihex $(BUILDDIR)/$(TARGET).elf $(BUILDDIR)/$(TARGET).hex
 	@$(OBJDUMP) -h -S -z $(BUILDDIR)/$(TARGET).elf > $(BUILDDIR)/$(TARGET).lss
 	@$(NM) -n $(BUILDDIR)/$(TARGET).elf > $(BUILDDIR)/$(TARGET).sym
-	@-mkdir -p $(OUTPUTDIR)
 
 $(BUILDDIR)/$(TARGET).elf: $(OBJ)
 	@echo Linking $@
