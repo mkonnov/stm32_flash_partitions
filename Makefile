@@ -17,4 +17,4 @@ stm32_proj:
 	@make -C example_project
 
 distclean:
-	rm -f *.o
+	rm -rf *.o
