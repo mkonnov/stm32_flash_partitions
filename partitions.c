@@ -1,3 +1,4 @@
+#include "flash.h"
 #include "partitions.h"
 
 partition_t partitions[PARTITIONS_MAX_NUM] = {
