@@ -30,7 +30,7 @@ LDFLAGS += -static -Xlinker --gc-sections
 LDFLAGS += -Wl,-Map=$(BUILDDIR)/$(TARGET).map,--cref
 ASFLAGS = $(COMMONFLAGS)
 
-CFLAGS += -I. -Ilibs/stm32f10x_periph/inc -Istm32f107_hal
+CFLAGS += -I. -Istm32f107_hal
 CFLAGS += -DSTM32F10X_CL
 
 CSRC = main.c
@@ -39,7 +39,7 @@ CSRC += stm32f107_hal/flash.c
 CSRC += stm32f107_hal/startup_stm32f10x_cl.c
 CSRC += stm32f107_hal/stm32f10x_it.c
 CSRC += stm32f107_hal/system_stm32f10x.c
-CSRC += $(wildcard stm32f10x_periph/src/*.c)
+#CSRC += $(wildcard stm32f10x_periph/src/*.c)
 
 COBJ = $(addprefix $(BUILDDIR)/, $(CSRC:.c=.c.o))
 OBJ = $(COBJ)
