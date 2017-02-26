@@ -37,6 +37,7 @@ LDFLAGS += -Wl,-Map=$(BUILDDIR)/$(TARGET).map,--cref
 ASFLAGS = $(COMMONFLAGS)
 
 CFLAGS += -DSTM32F10X_CL
+CFLAGS += -DUSE_STDPERIPH_DRIVER
 
 CSRC = main.c
 CSRC += stm32f107_hal/core_cm3.c
