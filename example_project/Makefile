@@ -14,23 +14,28 @@ OBJDUMP = $(CROSS)-objdump
 NM = $(CROSS)-nm
 
 LDSCRIPT = stm32f107_hal/stm32_flash_0x08000000.ld
+INCLUDES = -I. 
+INCLUDES += -Istm32f107_hal 
+INCLUDES += -Istm32f107_hal/stm32f10x_periph/inc
 
 COMMONFLAGS = -mcpu=cortex-m3 -mthumb -ggdb3
 CFLAGS += -Os
 CFLAGS += $(COMMONFLAGS) $(INCLUDES) -I.
-CFLAGS += -std=c99 -Wall -Wextra -static -fdata-sections -ffunction-sections -fno-hosted -fno-builtin
+CFLAGS += -std=c99 -Wall -Wextra -static 
+CFLAGS += -fdata-sections -ffunction-sections 
+CFLAGS += -fno-hosted -fno-builtin
 CFLAGS += -nostdlib -nodefaultlibs
 CFLAGS += -mapcs-frame -msoft-float
 CFLAGS += -Werror-implicit-function-declaration
 
 CFLAGS += -MD -MP -MF $(DEPDIR)/$(@F).d
 LDFLAGS = $(COMMONFLAGS) -static
-LDFLAGS += -fno-exceptions -ffunction-sections -fdata-sections
+LDFLAGS += -fno-exceptions 
+LDFLAGS += -ffunction-sections -fdata-sections
 LDFLAGS += -static -Xlinker --gc-sections
 LDFLAGS += -Wl,-Map=$(BUILDDIR)/$(TARGET).map,--cref
 ASFLAGS = $(COMMONFLAGS)
 
-CFLAGS += -I. -Istm32f107_hal
 CFLAGS += -DSTM32F10X_CL
 
 CSRC = main.c
@@ -39,7 +44,10 @@ CSRC += stm32f107_hal/flash.c
 CSRC += stm32f107_hal/startup_stm32f10x_cl.c
 CSRC += stm32f107_hal/stm32f10x_it.c
 CSRC += stm32f107_hal/system_stm32f10x.c
-#CSRC += $(wildcard stm32f10x_periph/src/*.c)
+CSRC += stm32f107_hal/uart.c
+CSRC += stm32f107_hal/stm32f10x_periph/src/stm32f10x_gpio.c
+CSRC += stm32f107_hal/stm32f10x_periph/src/stm32f10x_usart.c
+CSRC += printf/printf.c
 
 COBJ = $(addprefix $(BUILDDIR)/, $(CSRC:.c=.c.o))
 OBJ = $(COBJ)
