@@ -13,7 +13,7 @@ OBJCOPY = $(CROSS)-objcopy
 OBJDUMP = $(CROSS)-objdump
 NM = $(CROSS)-nm
 
-LDSCRIPT = stm32f107_hal/tbox_iap.ld
+LDSCRIPT = stm32f107_hal/stm32_flash_0x08000000.ld
 
 COMMONFLAGS = -mcpu=cortex-m3 -mthumb -ggdb3
 CFLAGS += -Os
