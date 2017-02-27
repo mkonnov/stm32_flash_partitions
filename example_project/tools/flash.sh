@@ -8,4 +8,4 @@ function flash_dfu_leave {
 	dfu-util --device , -a 0 -s "$2":leave -D "$1"
 }
 
-flash_dfu_leave partitions.bin 0x08000000
+flash_dfu_leave ../build/partitions.bin 0x08000000
