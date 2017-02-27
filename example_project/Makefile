@@ -14,12 +14,15 @@ OBJDUMP = $(CROSS)-objdump
 NM = $(CROSS)-nm
 
 LDSCRIPT = stm32f107_hal/stm32_flash_0x08000000.ld
+
 INCLUDES = -I. 
 INCLUDES += -Istm32f107_hal 
 INCLUDES += -Istm32f107_hal/stm32f10x_periph/inc
+INCLUDES += -Iprintf
+
 
 COMMONFLAGS = -mcpu=cortex-m3 -mthumb -ggdb3
-CFLAGS += -Os
+#CFLAGS += -Os
 CFLAGS += $(COMMONFLAGS) $(INCLUDES) -I.
 CFLAGS += -std=c99 -Wall -Wextra -static 
 CFLAGS += -fdata-sections -ffunction-sections 
@@ -48,6 +51,7 @@ CSRC += stm32f107_hal/system_stm32f10x.c
 CSRC += stm32f107_hal/uart.c
 CSRC += stm32f107_hal/stm32f10x_periph/src/stm32f10x_gpio.c
 CSRC += stm32f107_hal/stm32f10x_periph/src/stm32f10x_usart.c
+CSRC += stm32f107_hal/stm32f10x_periph/src/stm32f10x_rcc.c
 CSRC += printf/printf.c
 
 COBJ = $(addprefix $(BUILDDIR)/, $(CSRC:.c=.c.o))
