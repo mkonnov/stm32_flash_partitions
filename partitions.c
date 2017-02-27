@@ -1,3 +1,6 @@
+#include "stm32f10x.h"
+#include "core_cm3.h"
+
 #include "flash.h"
 #include "partitions.h"
 
@@ -24,7 +27,7 @@ int partition_copy(partition_id_t dst_id, partition_id_t src_id) {
 	__disable_irq();
 	partition_erase(dst_id);
 	flash_unlock();
-	res = FLASH_WRITE_FUNC(partitions[dst_id].origin, 
+	res = flash_write_block(partitions[dst_id].origin, 
 				partitions[src_id].origin,
 				partitions[src_id].size);
 	flash_lock();
