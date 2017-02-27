@@ -24,14 +24,10 @@ int partition_copy(partition_id_t dst_id, partition_id_t src_id) {
 	int res;
 	if (partitions[dst_id].size < partitions[src_id].size)
 		return -3;
-	__disable_irq();
 	partition_erase(dst_id);
-	flash_unlock();
 	res = flash_write_block(partitions[dst_id].origin, 
 				partitions[src_id].origin,
 				partitions[src_id].size);
-	flash_lock();
-	__enable_irq();
 	return res;
 }
 
