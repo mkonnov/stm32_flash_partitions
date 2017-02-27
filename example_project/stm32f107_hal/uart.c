@@ -4,7 +4,6 @@
 
 #include "uart.h"
 
-#define USER_USART USART2
 #define USER_USART_BAUD 115200
 #define USER_USART_WORD_LEN 8
 #define USER_USART_PARITY USART_Parity_No
@@ -31,13 +30,13 @@ static void uart_hw_init(USART_TypeDef *uart, uint32_t baud, uint16_t wordlen, u
 	if (uart == USART1) {
 		RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
 		RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
-		
-		gpio.GPIO_Pin = 10;
+
+		gpio.GPIO_Pin = GPIO_Pin_10;
 		gpio.GPIO_Speed = GPIO_Speed_50MHz;
 		gpio.GPIO_Mode = GPIO_Mode_AIN;
 		GPIO_Init(GPIOA, &gpio);
 
-		gpio.GPIO_Pin = 9;
+		gpio.GPIO_Pin = GPIO_Pin_9;
 		gpio.GPIO_Speed = GPIO_Speed_50MHz;
 		gpio.GPIO_Mode = GPIO_Mode_AF_PP;
 		GPIO_Init(GPIOA, &gpio);
@@ -55,12 +54,12 @@ static void uart_hw_init(USART_TypeDef *uart, uint32_t baud, uint16_t wordlen, u
 		RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
 		RCC->APB2ENR |= RCC_APB2ENR_AFIOEN;
 
-		gpio.GPIO_Pin = 3;
+		gpio.GPIO_Pin = GPIO_Pin_3;
 		gpio.GPIO_Speed = GPIO_Speed_50MHz;
 		gpio.GPIO_Mode = GPIO_Mode_AIN;
 		GPIO_Init(GPIOA, &gpio);
 
-		gpio.GPIO_Pin = 2;
+		gpio.GPIO_Pin = GPIO_Pin_2;
 		gpio.GPIO_Speed = GPIO_Speed_50MHz;
 		gpio.GPIO_Mode = GPIO_Mode_AF_PP;
 		GPIO_Init(GPIOA, &gpio);
@@ -71,6 +70,7 @@ static void uart_hw_init(USART_TypeDef *uart, uint32_t baud, uint16_t wordlen, u
 		USART_Cmd(USART2, ENABLE);
 		USART_ITConfig(USART2, USART_IT_RXNE, DISABLE);
 		USART_ITConfig(USART2, USART_IT_TXE, DISABLE);
+
 
 	}
 
@@ -107,7 +107,7 @@ void USART1_IRQHandler(void) {
         USART_ClearITPendingBit(USART1, USART_IT_TXE);
     }
 }
-#if 0
+
 void USART2_IRQHandler(void) {
     if (USART_GetITStatus(USART2, USART_IT_RXNE) != RESET) {
         USART_ClearITPendingBit(USART2, USART_IT_RXNE);
@@ -116,7 +116,7 @@ void USART2_IRQHandler(void) {
         USART_ClearITPendingBit(USART2, USART_IT_TXE);
     }
 }
-#endif
+
 void USART3_IRQHandler(void) {
     if (USART_GetITStatus(USART3, USART_IT_RXNE) != RESET) {
         USART_ClearITPendingBit(USART3, USART_IT_RXNE);
