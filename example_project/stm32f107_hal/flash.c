@@ -57,6 +57,8 @@ int flash_program_16bit(uint32_t address, uint16_t data) {
 
 int flash_write_block(uint32_t src, uint32_t dst, int size) {
 	int res = 0;
+	flash_unlock();
+	__disable_irq();
 	while (size > 0) {
 		res = flash_program_16bit(src, *(uint16_t*)(dst));
 		if (res != 0)
@@ -65,6 +67,8 @@ int flash_write_block(uint32_t src, uint32_t dst, int size) {
 		dst += 2;
 		size -=2;
 	}
+	flash_lock();
+	__enable_irq();
 	return res;
 }
 
