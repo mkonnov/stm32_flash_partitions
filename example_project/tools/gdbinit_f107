@@ -1,0 +1,22 @@
+target remote localhost:3333
+file ../build/partitions.elf
+load
+
+set pagination off
+
+monitor reset halt
+
+
+define rst
+	monitor reset halt
+end
+
+b HardFault_Handler
+commands
+printf "SCB->CFSR = %X\n", SCB->CFSR
+printf "SCB->MMFR = %X\n", SCB->MMFR
+printf "SCB->BFAR = %X\n", SCB->BFAR
+end
+
+b Default_Handler
+
