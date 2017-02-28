@@ -1,8 +1,5 @@
 #include <string.h>
 
-#include "stm32f10x.h"
-#include "core_cm3.h"
-
 #include "partitions.h"
 
 static prtn_table_t *partition_table;
@@ -18,7 +15,9 @@ void partition_table_init(prtn_table_t *prtns) {
 	partition_table = prtns;
 
 	for (; i < PARTITIONS_MAX_COUNT; i++) {
-		
+		if (prtns->partitions[i].erase_data == ERASE_ON_CREATION) {
+			partition_erase(prtns->partitions[i].name);
+		}
 	}
 }
 
