@@ -23,7 +23,7 @@ INCLUDES += -Iprintf
 
 
 COMMONFLAGS = -mcpu=cortex-m3 -mthumb -ggdb3
-CFLAGS += -Os
+#CFLAGS += -Os
 CFLAGS += $(COMMONFLAGS) $(INCLUDES) -I.
 CFLAGS += -std=c99 -Wall -Wextra -static 
 CFLAGS += -fdata-sections -ffunction-sections 
