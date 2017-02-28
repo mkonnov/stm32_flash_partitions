@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "stm32f10x.h"
 #include "core_cm3.h"
 
@@ -8,6 +10,18 @@ partition_t partitions[PARTITIONS_MAX_NUM] = {
 	PARTITION_TABLE(EXPAND_AS_PARTITIONS_SIZES_INIT)
 };
 
+static prtn_table_t *partition_table;
+static prtn_callbacks_t *callbacks;
+
+void partitions_register_callbacks(prtn_callbacks_t *cb) {
+	callbacks = cb;
+}
+
+void partition_table_init(prtn_table_t *prtns) {
+	partition_table = prtns;
+}
+
+#if 0
 bool partitions_init(uint32_t *addr) {
 	int8_t i;
 	for (i = 0; i < PARTITIONS_MAX_NUM; i++) {
@@ -19,6 +33,7 @@ bool partitions_init(uint32_t *addr) {
 	}
 	return true;
 }
+#endif
 
 int partition_copy(partition_id_t dst_id, partition_id_t src_id) {
 	int res;
