@@ -5,16 +5,10 @@
 #include <stdbool.h>
 #include <sys/types.h>
 
-#include "partition_table.h"
-
-#define EXPAND_AS_ENUM(name, ...) name,
-
-#define EXPAND_AS_PARTITIONS_SIZES_INIT(name, partition_size) \
-	{.size = (partition_size)},
-
 /* amount of partitions */
 #define PARTITIONS_MAX_COUNT 4
 #define PARTITION_MAX_NAME_LENGTH 16
+
 
 /* partition descriptor */
 typedef struct {
@@ -51,25 +45,6 @@ typedef struct {
 	prtn_flash_params flash_params;
 	prtn_desc_t partitions[PARTITIONS_MAX_COUNT];
 } prtn_table_t;
-
-/*
- * PARTITION_TABLE should be defined
- */
-typedef enum {
-	PARTITION_TABLE(EXPAND_AS_ENUM)
-	PARTITIONS_MAX_NUM
-} partition_id_t;
-
-	
-/*
- * Partition descriptor.
- * Sizes initialized according to PARTITIONS_TABLE,
- * origins calculated within partitions_init()
- */
-typedef struct {
-	uint32_t size;
-	uint32_t origin;
-} partition_t;
 
 void partitions_register_callbacks(prtn_callbacks_t *cb);
 void partition_table_init(prtn_table_t *table);

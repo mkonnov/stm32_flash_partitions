@@ -14,7 +14,12 @@ void partitions_register_callbacks(prtn_callbacks_t *cb) {
 }
 
 void partition_table_init(prtn_table_t *prtns) {
+	int i = 0;
 	partition_table = prtns;
+
+	for (; i < PARTITIONS_MAX_COUNT; i++) {
+		
+	}
 }
 
 
