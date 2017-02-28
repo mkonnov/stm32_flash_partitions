@@ -9,6 +9,8 @@
 #define PARTITIONS_MAX_COUNT 4
 #define PARTITION_MAX_NAME_LENGTH 16
 
+#define ERASE_ON_CREATION true
+#define NO_ERASE_ON_CREATION false
 
 /* partition descriptor */
 typedef struct {
