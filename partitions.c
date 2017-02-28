@@ -3,7 +3,6 @@
 #include "stm32f10x.h"
 #include "core_cm3.h"
 
-#include "flash.h"
 #include "partitions.h"
 
 static prtn_table_t *partition_table;
