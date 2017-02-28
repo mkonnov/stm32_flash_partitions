@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "stm32f10x.h"
 #include "system_stm32f10x.h"
@@ -39,23 +40,32 @@ int main(void) {
 	prtn_table_t prtns = {
 		{2048, 0x08000000, 1024 * 256},
 		{
-			{"bootloader", 0x08000000, 62 * 1024},
+			{"bootloader", 0x08000000, 20 * 1024},
 			{"firmware",   0x0800f800, 40 * 1024},
-			{"settings", 0xdeadbeef, 62 * 1024},
+			{"settings", 0x0803f800, 2 * 1024},
 			{NULL, NULL, NULL}
 		}
 	};
 	
 	partitions_register_callbacks(&cb);
 	partition_table_init(&prtns);
+
+	prtn_desc_t *fw_pd = partition_get_by_name("firmware");
+	prtn_desc_t *bl_pd = partition_get_by_name("bootloader");
 	
-	int i = 0;
-	while (prtns.partitions[i].origin_addr != NULL) {
-		printf("----\n\r%s\n\r", prtns.partitions[i].name);
-		printf("origin: %02X\r\n", prtns.partitions[i].origin_addr);
-		printf("size: %d\r\n", prtns.partitions[i].size);
-		i++;
+	if (!partition_is_empty("firmware")) {
+		printf("fw partition is not empty\n");
+		partition_erase("firmware");
 	}
+
+	printf("copying bootloader to firmware...\n");
+	partition_copy("firmware", "bootloader");
+
+	printf("checking memory...\n");
+	if (memcmp(fw_pd->origin_addr, bl_pd->origin_addr, bl_pd->size) == 0)
+		printf("OK: memory match\n");
+	else
+		printf("ERR: memory mismatch\n");
 
 	for(;;);
 	return 0;
