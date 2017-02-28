@@ -5,7 +5,6 @@
 static prtn_table_t *partition_table;
 static prtn_callbacks_t *callbacks;
 
-
 void partitions_register_callbacks(prtn_callbacks_t *cb) {
 	callbacks = cb;
 }
@@ -46,26 +45,19 @@ bool partition_erase(char *name) {
 
 	prtn_desc_t *pd = partition_get_by_name(name);
 
-	uint16_t start_page_num = (pd->origin_addr - \
-		partition_table->flash_params.flash_start ) / \
-		partition_table->flash_params.flash_size;
-
-	uint16_t end_page_num = (start_page_num + pd->size) / \
-		partition_table->flash_params.flash_size;
+	uint16_t start_page_num = (uint16_t)((pd->origin_addr - partition_table->flash_params.flash_start) / partition_table->flash_params.flash_page_size);
+	uint16_t end_page_num = start_page_num + pd->size / partition_table->flash_params.flash_page_size;
 
 	uint16_t cur_page_num = start_page_num;
-
-	uint32_t flash_page_start_addr;
 
 	callbacks->critical_section_start();
 	callbacks->flash_unlock();
 
 	for (; cur_page_num < end_page_num; cur_page_num++) {
-		flash_page_start_addr = partition_table->flash_params.flash_start + \
+		if (callbacks->erase_page(
+				partition_table->flash_params.flash_start +
 				partition_table->flash_params.flash_page_size * 
-				cur_page_num;
-		
-		if (callbacks->erase_page(flash_page_start_addr) < 0) {
+				cur_page_num) < 0) {
 			res = false;
 			break;
 		}
