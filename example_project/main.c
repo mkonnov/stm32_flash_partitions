@@ -40,10 +40,10 @@ int main(void) {
 	prtn_table_t prtns = {
 		{2048, 0x08000000, 1024 * 256},
 		{
-			{"bootloader", 0x08000000, 20 * 1024},
-			{"firmware",   0x0800f800, 40 * 1024},
-			{"settings", 0x0803f800, 2 * 1024},
-			{NULL, NULL, NULL}
+			{"bootloader", 0x08000000, 20 * 1024, NO_ERASE_ON_CREATION},
+			{"firmware",   0x0800f800, 40 * 1024, ERASE_ON_CREATION},
+			{"settings", 0x0803f800, 2 * 1024, NO_ERASE_ON_CREATION},
+			{NULL, NULL, NULL, NULL}
 		}
 	};
 	
