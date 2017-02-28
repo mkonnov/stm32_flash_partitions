@@ -30,7 +30,7 @@ typedef struct {
 
 typedef struct {
 	ssize_t (*copy)(void *dest, void *src, size_t n);
-	ssize_t (*erase_page)(void *addr, size_t n);
+	ssize_t (*erase_page)(void *addr);
 	/* can be NULL */
 	void (*flash_unlock)(void);
 	/* can be NULL */
@@ -73,12 +73,11 @@ typedef struct {
 
 void partitions_register_callbacks(prtn_callbacks_t *cb);
 void partition_table_init(prtn_table_t *table);
-int partition_copy(partition_id_t dst_id, partition_id_t src_id_t);
-bool partition_erase(partition_id_t id);
-bool partition_is_empty(partition_id_t id);
-int partition_get_origin(partition_id_t id);
-int partition_get_size(partition_id_t id);
+int partition_copy(char *dest, char *src);
+bool partition_erase(char *name);
+bool partition_is_empty(char *name);
 void partitions_test(void);
+prtn_desc_t *partition_get_by_name(char *name);
 
 
 

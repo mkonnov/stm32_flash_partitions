@@ -6,12 +6,9 @@
 #include "flash.h"
 #include "partitions.h"
 
-partition_t partitions[PARTITIONS_MAX_NUM] = {
-	PARTITION_TABLE(EXPAND_AS_PARTITIONS_SIZES_INIT)
-};
-
 static prtn_table_t *partition_table;
 static prtn_callbacks_t *callbacks;
+
 
 void partitions_register_callbacks(prtn_callbacks_t *cb) {
 	callbacks = cb;
@@ -21,54 +18,67 @@ void partition_table_init(prtn_table_t *prtns) {
 	partition_table = prtns;
 }
 
-#if 0
-bool partitions_init(uint32_t *addr) {
-	int8_t i;
-	for (i = 0; i < PARTITIONS_MAX_NUM; i++) {
-		/* first partition */
-		if (i == 0)
-			partitions[i].origin = (uint32_t)addr;
-		else
-			partitions[i].origin = partitions[i-1].origin + partitions[i-1].size;
-	}
-	return true;
-}
-#endif
 
-int partition_copy(partition_id_t dst_id, partition_id_t src_id) {
+int partition_copy(char *dest, char *src) {
 	int res;
-	if (partitions[dst_id].size < partitions[src_id].size)
+
+	prtn_desc_t *src_d, *dest_d;
+	
+	src_d = partition_get_by_name(src);
+	dest_d = partition_get_by_name(dest);
+
+	if (dest_d->size < src_d->size)
 		return -3;
-	partition_erase(dst_id);
-	res = flash_write_block(partitions[dst_id].origin, 
-				partitions[src_id].origin,
-				partitions[src_id].size);
+
+	partition_erase(dest);
+	
+	res = callbacks->copy(dest_d->origin_addr,
+				src_d->origin_addr,
+				src_d->size);
 	return res;
 }
 
-bool partition_erase(partition_id_t id) {
+bool partition_erase(char *name) {
 	bool res = true;
-	uint16_t start_page_num = FLASH_PAGE_NUM(partitions[id].origin);
-	uint16_t end_page_num = start_page_num + (partitions[id].size / FLASH_PAGE_SIZE);
+
+	prtn_desc_t *pd = partition_get_by_name(name);
+
+	uint16_t start_page_num = (pd->origin_addr - \
+		partition_table->flash_params.flash_start ) / \
+		partition_table->flash_params.flash_size;
+
+	uint16_t end_page_num = (start_page_num + pd->size) / \
+		partition_table->flash_params.flash_size;
+
 	uint16_t cur_page_num = start_page_num;
-	__disable_irq();
-	flash_unlock();
-	for (; cur_page_num< end_page_num; cur_page_num++) {
-		if (flash_erase_page(FLASH_PAGE_START_ADDR(cur_page_num)) < 0) {
+
+	uint32_t flash_page_start_addr;
+
+	callbacks->critical_section_start();
+	callbacks->flash_unlock();
+
+	for (; cur_page_num < end_page_num; cur_page_num++) {
+		flash_page_start_addr = partition_table->flash_params.flash_start + \
+				partition_table->flash_params.flash_page_size * 
+				cur_page_num;
+		
+		if (callbacks->erase_page(flash_page_start_addr) < 0) {
 			res = false;
 			break;
 		}
 	}
-	flash_lock();
-	__enable_irq();
+	
+	callbacks->flash_lock();
+	callbacks->critical_section_end();
 	return res;
 }
 
-bool partition_is_empty(partition_id_t id) {
+bool partition_is_empty(char *name) {
 	int i;
-	int size = partitions[id].size / sizeof(int);
+	prtn_desc_t *pd = partition_get_by_name(name);
+	int size = pd->size / sizeof(int);
 	for (i = 0; i < size; i++) {
-		if (*(unsigned int*)(partitions[id].origin + i * sizeof(int)) != 0xffffffff) {
+		if (*(unsigned int*)(pd->origin_addr + i * sizeof(int)) != 0xffffffff) {
 			return false;
 			break;
 		}
@@ -76,10 +86,13 @@ bool partition_is_empty(partition_id_t id) {
 	return true;
 }
 
-int partition_get_origin(partition_id_t id) {
-	return partitions[id].origin;
+prtn_desc_t *partition_get_by_name(char *name) {
+	int i = 0;
+	for (; i < PARTITIONS_MAX_COUNT; i++) {
+		if (strcmp(partition_table->partitions[i].name, name) == 0)
+			break;
+	}
+	return &(partition_table->partitions[i]);
 }
 
-int partition_get_size(partition_id_t id) {
-	return partitions[id].size;
-}
+
