@@ -18,7 +18,7 @@ make you focus on more important tasks.
 Kill warnings
 
 
-Get rid of X-acros and initialize partitions by names, start addresses etc. at init stage
+Get rid of X-macros and initialize partitions by names, start addresses etc. at init stage
 
 
 Make it more generic and platform-indepentent.
